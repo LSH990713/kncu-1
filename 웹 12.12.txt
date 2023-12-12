@@ -1,0 +1,390 @@
+1. header.php
+
+<?php
+	session_start();
+	if (isset($_SESSION['userid'])) {
+		$userid = $_SESSION['userid'];
+	}
+	else{
+		$userid = "";
+	}
+	if (isset($_SESSION['username'])) {
+		$username = $_SESSION['username'];
+	}
+	else
+		$username = "";
+	if (isset($_SESSION['userlevel'])) {
+		$userlevel = $_SESSION['userlevel'];
+	}
+	else
+		$userlevel = "";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>웹사이트 제작</title>
+	<link rel="stylesheet" type="text/css" href="style_www.css">
+</head>
+<body>
+	<header>
+		<h3 class="logo">
+			<a href="../main/index.php">계명문화대학교 컴퓨터과</a>
+		</h3>
+		<ul class="top_menu">
+			<?php
+			if (!$userid) {
+				echo "<li>홈페이지에 오신 것을 환영합니다~~~~ </li>";
+			}
+			else{
+				$logged = $username."(Level:".$userlevel.")님 환영합니다. ";
+				echo "<li>$logged</li>";
+			}
+			?>
+		</ul>
+
+		<ul class="main_menu">
+			<?php
+			if (!$userid) {
+			?>
+			<li><a href="../member/index.php?type=form">회원 가입</a></li>
+			<li><a href="../member/index.php?type=login_form">로그인</a></li>
+			<?php 
+				} else {
+			?>
+			<li><a href="../member/logout.php?type=form">로그아웃</a></li>
+			<li><a href="../member/index.php?type=modify_form">정보수정</a></li>
+			<?php 
+				}
+			?>
+			<li>|</li>
+			<li><a href="../mboard/index.php?type=list&table=_notice">공지 게시판</a></li>
+			<li><a href="../mboard/index.php?type=list&table=_qna">QNA 게시판</a></li>
+			<li><a href="../mboard/index.php?type=list&table=_youtube">YOUTUBE 게시판</a></li>
+		</ul>
+	</header>
+		}
+</body>
+</html>
+
+2. _men.php
+
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "database";
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	$sql = "CREATE TABLE _men (
+		num int not null auto_increment,
+		id char(20) not null,
+		pass char(20) not null,
+		name char(20) not null,
+		email char(80),
+		regist_day char(20),
+		level int,
+		points int,
+		primary key(num))";
+
+		$result = mysqli_query($conn, $sql);
+		if ($result) {
+			echo "회원 db테이블에 생성 완료!";
+		}
+		else
+			echo "회원 db테이블에 생성 오류 :".mysqli_error($conn);
+		mysqli_close($conn);
+?>
+
+3. _notice.php
+
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "database";
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	$sql = "CREATE TABLE _notice (
+		num int not null auto_increment,
+		id char(20) not null,
+		name char(20) not null,
+		subject char(200) not null,
+		content text,
+		is_html char(1),
+		regist_day char(20),
+		file_name char(40),
+		file_type char(40),
+		file_copied char(40),
+		primary key(num))";
+
+	$result = mysqli_query($conn, $sql);
+		if ($result) {
+			echo "공지 게시판 테이블에 생성 완료!";
+		}
+		else
+			echo "공지 게시판 테이블에 생성 오류 :".mysqli_error($conn);
+		mysqli_close($conn);
+?>
+
+4. _qna.php
+
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "database";
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	$sql = "CREATE TABLE _qna (
+		num int not null auto_increment,
+		id char(20) not null,
+		name char(20) not null,
+		subject char(200) not null,
+		content text,
+		is_html char(1),
+		regist_day char(20),
+		file_name char(40),
+		file_type char(40),
+		file_copied char(40),
+		primary key(num))";
+
+	$result = mysqli_query($conn, $sql);
+		if ($result) {
+			echo "QNA 게시판 테이블에 생성 완료!";
+		}
+		else
+			echo "QNA 게시판 테이블에 생성 오류 :".mysqli_error($conn);
+		mysqli_close($conn);
+?>
+
+5. _qna_ripple.php
+
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "database";
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	$sql = "CREATE TABLE _qna_ripple (
+		num int not null auto_increment,
+		parent int not null,
+		id char(20) not null,
+		name char(20) not null,
+		content text not null,
+		regist_day char(20),
+		primary key(num))";
+
+	$result = mysqli_query($conn, $sql);
+		if ($result) {
+			echo "QNA 게시판 댓글 테이블에 생성 완료!";
+		}
+		else
+			echo "QNA 게시판 댓글 테이블에 생성 오류 :".mysqli_error($conn);
+		mysqli_close($conn);
+?>
+
+6. index_www.php
+
+<?php
+	include "header.php";
+	include "main.php";
+?>
+
+7. _youtube.php
+
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "database";
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	$sql = "CREATE TABLE _youtube (
+		num int not null auto_increment,
+		id char(20) not null,
+		name char(20) not null,
+		subject char(200) not null,
+		content text,
+		is_html char(1),
+		regist_day char(20),
+		file_name char(40),
+		file_type char(40),
+		file_copied char(40),
+		primary key(num))";
+
+	$result = mysqli_query($conn, $sql);
+		if ($result) {
+			echo "유튜브 게시판 테이블에 생성 완료!";
+		}
+		else
+			echo "유튜브 게시판  테이블에 생성 오류 :".mysqli_error($conn);
+		mysqli_close($conn);
+?>
+
+8. main.php
+
+<div class="notice">
+	<h4>공지 게시판</h4>
+<?php
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "database";
+
+	$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+	$sql = "SELECT * FROM _notice ORDER BY num DESC LIMIT 5";
+	$result = mysqli_query($con, $sql);
+
+	while ($row = mysqli_fetch_assoc($result)) {
+		$num = $row["num"];
+		$name = $row["name"];
+		$date = $row["regist_day"];
+		$date = substr($date, 0, 10);
+
+		$subject = $row["subject"];
+		$subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+?>
+<div class="item">
+	<span class="col1"><a href="../mboard/index.php?type=view&table=_notice&num=<?=$num?>&page=1"><?$subject ?></a></span>
+	<span class="col2"><?=$date?></span>
+</div>
+<?php
+	}
+?>
+</div>
+<div class="qna">
+	<h4>QNA 게시판</h4>
+<?php 
+	$sql = "SELECT * FROM _qna ORDER BY num DESC limit 5";
+	$result = mysqli_query($con, $sql);
+
+	while ($row = mysqli_fetch_assoc($result)) {
+		$num = $row["num"];
+		$name = $row["name"];
+		$date = $row["regist_day"];
+		$date = substr($date, 0, 10);
+
+		$subject = $row["subject"];
+		$subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+?>
+<div class="item">
+	<span class="col1"><a href="../mboard/index.php?type=view&table=_qna&num=<?$num?>&page=1"><?=$subject ?></a>
+	<?php
+		$sql = "SELECT * FROM _qna_ripple WHERE parent=$num";
+		$result2 = mysqli_query($con, $sql);
+		$num_ripple = mysqli_num_rows($result2);
+
+		if ($num_ripple) 
+			echo "[$num_ripple]";
+	?>
+</span>
+<span class="col2"><?=$date?></span>
+</div>
+<?php
+	}
+	mysqli_close($con);
+?>
+</div>
+
+9. member_index.php
+
+<?php
+	$type = $_GET['type'];
+	include "../header.php";
+	include $type.".php";
+?>
+
+10. member_form.php
+
+<script>
+	function check_input() {
+		if (!document.member.id.value){
+			alert("아이디를 입력하세요!");
+			document.member.id.focus();
+			return;
+		}
+		if (!document.member.pass.value){
+			alert("비밀번호를 입력하세요!");
+			document.member.pass.focus();
+			return;
+		}
+		if (!document.member.pass_confirm.value){
+			alert("비밀번호 확인을 입력하세요!");
+			document.member.pass_confirm.focus();
+			return;
+		}
+		if (!document.member.name.value){
+			alert("이름을 입력하세요!");
+			document.member.name.focus();
+			return;
+		}
+		if (!document.member.email.value){
+			alert("이메일을 입력하세요!");
+			document.member.email.focus();
+			return;
+		}
+		if (document.member.pass.value != document.member.pass_confirm.value){
+			alert("비밀번호가 일치하지 않습니다. \n 다시 입력하세요!");
+			document.member.pass.focus();
+			document.member.pass.select();
+			return;
+		}
+		document.member.submit();
+	}
+	function reset_form() {
+		document.member.id.value = "";
+		document.member.pass.value = "";
+		document.member.pass_confirm.value = "";
+		document.member.name.value = "";
+		document.member.email.value = "";
+		document.member.id.focus();
+		return;
+	}
+	function check_id() {
+		window.open("check_id.php?id=" + document.member.id.value,
+			"IDcheck",
+			"left=700,top=300,width=380,height=160,scrollbars=no,resizable=yes");
+	}
+</script>
+<form name="member" action="insert.php" method="post">
+	<div class="join_form">
+		<h2>회원 가입</h2>
+		<ul>
+			<li>
+				<span class="col1">아이디</span>
+				<span class="col2"><input type="text" name="id"></span>
+				<span class="col3"><button type="button" onclick="check_id()">중복체크</button></span>
+			</li>
+			<li>
+				<span class="col1">비밀번호</span>
+				<span class="col2"><input type="password" name="pass"></span>
+			</li>
+			<li>
+				<span class="col1">비밀번호 확인</span>
+				<span class="col2"><input type="password" name="pass_confirm"></span>
+			</li>
+			<li>
+				<span class="col1">이름</span>
+				<span class="col2"><input type="text" name="name"></span>
+			</li>
+			<li>
+				<span class="col1">이메일</span>
+				<span class="col2"><input type="text" name="email"></span>
+			</li>
+		</ul>
+
+		<ul class="buttons">
+			<li><button type="button" onclick="check_input()">저장하기</button></li>
+			<li><button type="button" onclick="reset_form()">취소하기</button></li>
+		</ul>
+	</div>
+</form>
